@@ -1,4 +1,4 @@
-# PDF-Viewer
+# PDF Viewer - GitHub Pages : pdf-sandbox
 
 ## 🗂️ローカルディレクトリからのPDFのアップロードについて
 
@@ -39,4 +39,4 @@ v0.1.0
 - 初期リリース
 - PDFビューアー
 
----# pdf-sandbox
+---
