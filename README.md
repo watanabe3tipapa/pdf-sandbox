@@ -1,5 +1,8 @@
 # PDF Viewer - GitHub Pages : pdf-sandbox
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Version](https://img.shields.io/badge/version-0.1.0-green.svg)
+
 ## 🗂️ローカルディレクトリからのPDFのアップロードについて
 
 PDF-viewer - GitHub Pages 上でPDFファイルを閲覧することができます。
