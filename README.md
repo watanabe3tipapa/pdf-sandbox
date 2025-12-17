@@ -13,9 +13,9 @@ PDF-viewer - GitHub Pages 上でPDFファイルを閲覧することができま
 
 ## 🗂️このリポジトリの contents ディレクトリについて
 
-このリポジトリでは、PDFファイルを `contents/` ディレクトリに格納してください。
+このリポジトリでは、PDFファイルを `docs/contents/` ディレクトリに格納してください。
 
-- 例: `contents/sample1.pdf`, `contents/sample2.pdf` など
+- 例: `docs/contents/sample1.pdf`, `docs/contents/sample2.pdf` など
 - ファイル名や内容は自由です
 - 必要に応じてサブディレクトリを作成しても構いません
 
