@@ -428,10 +428,10 @@
     </div>
 
     <!-- PDF.js ライブラリ -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="lib/pdf.min.js"></script>
     <script>
         // PDF.js のワーカーパスを設定
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib/pdf.worker.min.js';
 
         let pdfDoc = null;
         let pageNum = 1;
