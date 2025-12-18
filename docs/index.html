@@ -1,810 +1,843 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>PDF Viewer - GitHub Pages</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PDF Viewer - GitHub Pages</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                background: #f5f5f5;
+                background-image:
+                    linear-gradient(
+                        rgba(52, 152, 219, 0.1) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(52, 152, 219, 0.1) 1px,
+                        transparent 1px
+                    );
+                background-size: 20px 20px;
+                color: #333;
+            }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            background-image:
-                linear-gradient(rgba(52, 152, 219, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(52, 152, 219, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .refresh-section {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .refresh-button {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .refresh-button:hover {
-            background: #229954;
-        }
-
-        .refresh-button:disabled {
-            background: #7f8c8d;
-            cursor: not-allowed;
-        }
-
-        .refresh-icon {
-            font-size: 16px;
-        }
-
-        .upload-section {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            margin: 20px 0;
-        }
-
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-input-button {
-            display: inline-block;
-            padding: 15px 30px;
-            background: #3498db;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-size: 16px;
-        }
-
-        .file-input-button:hover {
-            background: #2980b9;
-        }
-
-        .existing-files-section {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .existing-files-section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .file-card {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .file-card:hover {
-            border-color: #3498db;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .file-icon {
-            font-size: 48px;
-            color: #e74c3c;
-            margin-bottom: 10px;
-        }
-
-        .file-name {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 5px;
-            word-break: break-word;
-        }
-
-        .file-size {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-
-        .file-date {
-            font-size: 11px;
-            color: #95a5a6;
-        }
-
-        .load-button {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-
-        .load-button:hover {
-            background: #229954;
-        }
-
-        .no-files {
-            text-align: center;
-            color: #7f8c8d;
-            padding: 40px;
-            font-style: italic;
-        }
-
-        .pdf-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: none;
-        }
-
-        .pdf-toolbar {
-            background: #34495e;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .toolbar-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .toolbar-button {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-
-        .toolbar-button:hover {
-            background: #1a252f;
-        }
-
-        .toolbar-button:disabled {
-            background: #7f8c8d;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            font-size: 14px;
-            color: #ecf0f1;
-        }
-
-        .zoom-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .zoom-button {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .zoom-level {
-            font-size: 14px;
-            color: #ecf0f1;
-            min-width: 60px;
-            text-align: center;
-        }
-
-        #pdf-viewer {
-            width: 100%;
-            height: 600px;
-            border: none;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #7f8c8d;
-        }
-
-        .error {
-            text-align: center;
-            padding: 30px;
-            color: #e74c3c;
-            background: #fdf2f2;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .github-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: #24292e;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .github-link:hover {
-            background: #2f363d;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(36, 41, 46, 0.3);
-        }
-
-        .github-icon {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                padding: 20px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .header h1 {
+                color: #2c3e50;
+                margin-bottom: 10px;
+            }
+
+            .refresh-section {
+                text-align: center;
+                margin-top: 15px;
+            }
+
+            .refresh-button {
+                background: #27ae60;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background 0.3s;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .refresh-button:hover {
+                background: #229954;
+            }
+
+            .refresh-button:disabled {
+                background: #7f8c8d;
+                cursor: not-allowed;
+            }
+
+            .refresh-icon {
+                font-size: 16px;
+            }
+
+            .upload-section {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .file-input-wrapper {
+                position: relative;
+                display: inline-block;
+                margin: 20px 0;
+            }
+
+            .file-input {
+                position: absolute;
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
+            }
+
+            .file-input-button {
+                display: inline-block;
+                padding: 15px 30px;
+                background: #3498db;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background 0.3s;
+                font-size: 16px;
+            }
+
+            .file-input-button:hover {
+                background: #2980b9;
+            }
+
+            .existing-files-section {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+
+            .existing-files-section h2 {
+                color: #2c3e50;
+                margin-bottom: 20px;
+                text-align: center;
             }
 
             .files-grid {
-                grid-template-columns: 1fr;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+                margin-top: 20px;
+            }
+
+            .file-card {
+                background: #f8f9fa;
+                border: 2px solid #e9ecef;
+                border-radius: 8px;
+                padding: 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s;
+                position: relative;
+            }
+
+            .file-card:hover {
+                border-color: #3498db;
+                box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+                transform: translateY(-2px);
+            }
+
+            .file-icon {
+                font-size: 48px;
+                color: #e74c3c;
+                margin-bottom: 10px;
+            }
+
+            .file-name {
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 5px;
+                word-break: break-word;
+            }
+
+            .file-size {
+                font-size: 12px;
+                color: #7f8c8d;
+                margin-bottom: 10px;
+            }
+
+            .file-date {
+                font-size: 11px;
+                color: #95a5a6;
+            }
+
+            .load-button {
+                background: #27ae60;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-top: 10px;
+                transition: background 0.3s;
+            }
+
+            .load-button:hover {
+                background: #229954;
+            }
+
+            .no-files {
+                text-align: center;
+                color: #7f8c8d;
+                padding: 40px;
+                font-style: italic;
+            }
+
+            .pdf-container {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                display: none;
             }
 
             .pdf-toolbar {
-                flex-direction: column;
-                gap: 15px;
+                background: #34495e;
+                color: white;
+                padding: 10px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
             }
 
             .toolbar-group {
-                justify-content: center;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .toolbar-button {
+                background: #2c3e50;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background 0.3s;
+            }
+
+            .toolbar-button:hover {
+                background: #1a252f;
+            }
+
+            .toolbar-button:disabled {
+                background: #7f8c8d;
+                cursor: not-allowed;
+            }
+
+            .page-info {
+                font-size: 14px;
+                color: #ecf0f1;
+            }
+
+            .zoom-controls {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .zoom-button {
+                background: #2c3e50;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 12px;
+            }
+
+            .zoom-level {
+                font-size: 14px;
+                color: #ecf0f1;
+                min-width: 60px;
+                text-align: center;
             }
 
             #pdf-viewer {
-                height: 400px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>PDF Viewer</h1>
-            <p>PDFファイルをアップロードして表示・操作できます</p>
-            <div class="refresh-section">
-                <button id="refresh-button" class="refresh-button">
-                    <span class="refresh-icon">🔄</span>
-                    リフレッシュ（再読み込み）
-                </button>
-            </div>
-        </div>
-
-        <div class="upload-section">
-            <h2>PDFファイル（ローカル）を選択</h2>
-            <div class="file-input-wrapper">
-                <input type="file" id="file-input" class="file-input" accept=".pdf" />
-                <label for="file-input" class="file-input-button">PDFファイルを選択</label>
-            </div>
-            <p>または、ファイルをここにドラッグ&ドロップしてください</p>
-        </div>
-
-        <div class="existing-files-section">
-            <h2>利用可能なPDFファイル（このリポジトリ内）</h2>
-            <div id="files-container">
-                <div class="no-files">
-                    <p>contents/フォルダにPDFファイルがありません</p>
-                    <p>PDFファイルをcontents/フォルダに追加してください</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="pdf-container" class="pdf-container">
-            <div class="pdf-toolbar">
-                <div class="toolbar-group">
-                    <button id="prev-page" class="toolbar-button" disabled>前のページ</button>
-                    <span class="page-info">
-                        <span id="page-num">1</span> / <span id="page-count">1</span>
-                    </span>
-                    <button id="next-page" class="toolbar-button" disabled>次のページ</button>
-                </div>
-
-                <div class="zoom-controls">
-                    <button id="zoom-out" class="zoom-button">-</button>
-                    <span class="zoom-level" id="zoom-level">100%</span>
-                    <button id="zoom-in" class="zoom-button">+</button>
-                </div>
-
-                <div class="toolbar-group">
-                    <button id="download-btn" class="toolbar-button">ダウンロード</button>
-                    <button id="print-btn" class="toolbar-button">印刷</button>
-                </div>
-            </div>
-
-            <canvas id="pdf-canvas"></canvas>
-        </div>
-
-        <div id="loading" class="loading" style="display: none;">
-            <p>PDFを読み込み中...</p>
-        </div>
-
-        <div id="error" class="error" style="display: none;">
-            <p>PDFの読み込みに失敗しました。</p>
-        </div>
-    </div>
-
-    <div class="footer">
-        <a href="https://github.com/watanabe3tipapa/pdf-sandbox" target="_blank" rel="noopener" class="github-link">
-            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-            </svg>
-            このリポジトリを見る
-        </a>
-    </div>
-
-    <!-- PDF.js ライブラリ -->
-    <script src="lib/pdf.min.js"></script>
-    <script>
-        // PDF.js のワーカーパスを設定
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib/pdf.worker.min.js';
-
-        let pdfDoc = null;
-        let pageNum = 1;
-        let pageRendering = false;
-        let pageNumPending = null;
-        let scale = 1.0;
-        let canvas = null;
-        let ctx = null;
-        let currentFile = null;
-
-        // DOM要素の取得
-        const fileInput = document.getElementById('file-input');
-        const pdfContainer = document.getElementById('pdf-container');
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        const prevButton = document.getElementById('prev-page');
-        const nextButton = document.getElementById('next-page');
-        const pageNumSpan = document.getElementById('page-num');
-        const pageCountSpan = document.getElementById('page-count');
-        const zoomInButton = document.getElementById('zoom-in');
-        const zoomOutButton = document.getElementById('zoom-out');
-        const zoomLevelSpan = document.getElementById('zoom-level');
-        const downloadBtn = document.getElementById('download-btn');
-        const printBtn = document.getElementById('print-btn');
-        const filesContainer = document.getElementById('files-container');
-        const refreshBtn = document.getElementById('refresh-button');
-
-        // ファイル一覧の初期化
-        initFileList();
-
-        // ファイル入力の処理
-        fileInput.addEventListener('change', handleFileSelect);
-
-        // ドラッグ&ドロップの処理
-        const uploadSection = document.querySelector('.upload-section');
-
-        uploadSection.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadSection.style.background = '#e8f4fd';
-        });
-
-        uploadSection.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            uploadSection.style.background = 'white';
-        });
-
-        uploadSection.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadSection.style.background = 'white';
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'application/pdf') {
-                fileInput.files = files;
-                handleFileSelect();
-            }
-        });
-
-        // ボタンイベント
-        prevButton.addEventListener('click', onPrevPage);
-        nextButton.addEventListener('click', onNextPage);
-        zoomInButton.addEventListener('click', zoomIn);
-        zoomOutButton.addEventListener('click', zoomOut);
-        downloadBtn.addEventListener('click', downloadPDF);
-        printBtn.addEventListener('click', printPDF);
-        refreshBtn.addEventListener('click', refreshPage);
-
-        // リフレッシュボタンのデバッグ
-        console.log('リフレッシュボタン要素:', refreshBtn);
-        refreshBtn.addEventListener('click', function () {
-            console.log('リフレッシュボタンがクリックされました');
-        });
-
-        // ファイル一覧の初期化
-        function initFileList() {
-            // contents/フォルダ内のPDFファイル一覧
-            const pdfFiles = [
-                { name: 'notion_vs_obsidian.pdf', size: '126KB', date: '2024-03-20', path: 'contents/notion_vs_obsidian.pdf' },
-                { name: 'sample1.pdf', size: '992KB', date: '2024-01-15', path: 'contents/sample1.pdf' },
-                { name: 'sample2.pdf', size: '13KB', date: '2024-01-10', path: 'contents/sample2.pdf' },
-                { name: 'service_guide.pdf', size: '3.9MB', date: '2024-01-05', path: 'contents/service_guide.pdf' }
-            ];
-
-            if (pdfFiles.length === 0) {
-                filesContainer.innerHTML = '<div class="no-files"><p>contents/フォルダにPDFファイルがありません</p><p>PDFファイルをcontents/フォルダに追加してください</p></div>';
-                return;
+                width: 100%;
+                height: 600px;
+                border: none;
             }
 
-            const filesGrid = document.createElement('div');
-            filesGrid.className = 'files-grid';
+            .loading {
+                text-align: center;
+                padding: 50px;
+                color: #7f8c8d;
+            }
 
-            pdfFiles.forEach(file => {
-                const fileCard = createFileCard(file);
-                filesGrid.appendChild(fileCard);
+            .error {
+                text-align: center;
+                padding: 30px;
+                color: #e74c3c;
+                background: #fdf2f2;
+                border-radius: 5px;
+                margin: 20px 0;
+            }
+
+            .footer {
+                text-align: center;
+                margin-top: 40px;
+                padding: 20px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .github-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 20px;
+                background: #24292e;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: 600;
+                transition: all 0.3s;
+                font-size: 14px;
+            }
+
+            .github-link:hover {
+                background: #2f363d;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(36, 41, 46, 0.3);
+            }
+
+            .github-icon {
+                width: 18px;
+                height: 18px;
+                fill: currentColor;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 10px;
+                }
+
+                .files-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .pdf-toolbar {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .toolbar-group {
+                    justify-content: center;
+                }
+
+                #pdf-viewer {
+                    height: 400px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>PDF Viewer</h1>
+                <p>PDFファイルをアップロードして表示・操作できます</p>
+                <div class="refresh-section">
+                    <button id="refresh-button" class="refresh-button">
+                        <span class="refresh-icon">🔄</span>
+                        リフレッシュ（再読み込み）
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <h2>PDFファイル（ローカル）を選択</h2>
+                <div class="file-input-wrapper">
+                    <input
+                        type="file"
+                        id="file-input"
+                        class="file-input"
+                        accept=".pdf"
+                    />
+                    <label for="file-input" class="file-input-button"
+                        >PDFファイルを選択</label
+                    >
+                </div>
+                <p>または、ファイルをここにドラッグ&ドロップしてください</p>
+            </div>
+
+            <div class="existing-files-section">
+                <h2>利用可能なPDFファイル（このリポジトリ内）</h2>
+                <div id="files-container">
+                    <div class="no-files">
+                        <p>contents/フォルダにPDFファイルがありません</p>
+                        <p>PDFファイルをcontents/フォルダに追加してください</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pdf-container" class="pdf-container">
+                <div class="pdf-toolbar">
+                    <div class="toolbar-group">
+                        <button id="prev-page" class="toolbar-button" disabled>
+                            前のページ
+                        </button>
+                        <span class="page-info">
+                            <span id="page-num">1</span> /
+                            <span id="page-count">1</span>
+                        </span>
+                        <button id="next-page" class="toolbar-button" disabled>
+                            次のページ
+                        </button>
+                    </div>
+
+                    <div class="zoom-controls">
+                        <button id="zoom-out" class="zoom-button">-</button>
+                        <span class="zoom-level" id="zoom-level">100%</span>
+                        <button id="zoom-in" class="zoom-button">+</button>
+                    </div>
+
+                    <div class="toolbar-group">
+                        <button id="download-btn" class="toolbar-button">
+                            ダウンロード
+                        </button>
+                        <button id="print-btn" class="toolbar-button">
+                            印刷
+                        </button>
+                    </div>
+                </div>
+
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+
+            <div id="loading" class="loading" style="display: none">
+                <p>PDFを読み込み中...</p>
+            </div>
+
+            <div id="error" class="error" style="display: none">
+                <p>PDFの読み込みに失敗しました。</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a
+                href="https://github.com/watanabe3tipapa/pdf-sandbox"
+                target="_blank"
+                rel="noopener"
+                class="github-link"
+            >
+                <svg
+                    class="github-icon"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                    />
+                </svg>
+                このリポジトリを見る
+            </a>
+        </div>
+
+        <!-- PDF.js ライブラリ -->
+        <script src="lib/pdf.min.js"></script>
+        <script>
+            // PDF.js のワーカーパスを設定
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib/pdf.worker.min.js';
+
+            let pdfDoc = null;
+            let pageNum = 1;
+            let pageRendering = false;
+            let pageNumPending = null;
+            let scale = 1.0;
+            let canvas = null;
+            let ctx = null;
+            let currentFile = null;
+
+            // DOM要素の取得
+            const fileInput = document.getElementById('file-input');
+            const pdfContainer = document.getElementById('pdf-container');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+            const pageNumSpan = document.getElementById('page-num');
+            const pageCountSpan = document.getElementById('page-count');
+            const zoomInButton = document.getElementById('zoom-in');
+            const zoomOutButton = document.getElementById('zoom-out');
+            const zoomLevelSpan = document.getElementById('zoom-level');
+            const downloadBtn = document.getElementById('download-btn');
+            const printBtn = document.getElementById('print-btn');
+            const filesContainer = document.getElementById('files-container');
+            const refreshBtn = document.getElementById('refresh-button');
+
+            // ファイル一覧の初期化
+            initFileList();
+
+            // ファイル入力の処理
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // ドラッグ&ドロップの処理
+            const uploadSection = document.querySelector('.upload-section');
+
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.style.background = '#e8f4fd';
             });
 
-            filesContainer.innerHTML = '';
-            filesContainer.appendChild(filesGrid);
-        }
-
-        // ファイルカードの作成
-        function createFileCard(file) {
-            const card = document.createElement('div');
-            card.className = 'file-card';
-            card.innerHTML = `
-                <div class="file-icon">📄</div>
-                <div class="file-name">${file.name}</div>
-                <div class="file-size">${file.size}</div>
-                <div class="file-date">${file.date}</div>
-                <button class="load-button" onclick="loadFileFromList('${file.name}', '${file.path}')">読み込み</button>
-            `;
-            return card;
-        }
-
-        // ファイル一覧からファイルを読み込み
-        function loadFileFromList(fileName, filePath) {
-            console.log(`Loading file: ${fileName} from ${filePath}`);
-
-            loading.style.display = 'block';
-            error.style.display = 'none';
-            pdfContainer.style.display = 'none';
-
-            // PDF.jsでcontents/フォルダのPDFを読み込み
-            pdfjsLib.getDocument(filePath).promise.then(function (pdf) {
-                pdfDoc = pdf;
-                pageCountSpan.textContent = pdf.numPages;
-
-                // キャンバスの初期化
-                canvas = document.getElementById('pdf-canvas');
-                ctx = canvas.getContext('2d');
-
-                // 最初のページを表示
-                pageNum = 1;
-                scale = 1.0;
-                zoomLevelSpan.textContent = '100%';
-                renderPage(pageNum);
-
-                loading.style.display = 'none';
-                pdfContainer.style.display = 'block';
-
-                // ボタンの有効化
-                updateButtons();
-
-                // 現在のファイル情報を更新
-                currentFile = { name: fileName, path: filePath };
-            }).catch(function (error) {
-                console.error('PDF読み込みエラー:', error);
-                loading.style.display = 'none';
-                document.getElementById('error').style.display = 'block';
+            uploadSection.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadSection.style.background = 'white';
             });
-        }
 
-        function handleFileSelect() {
-            const file = fileInput.files[0];
-            if (file && file.type === 'application/pdf') {
-                currentFile = file;
-                loadPDF(file);
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.style.background = 'white';
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    fileInput.files = files;
+                    handleFileSelect();
+                }
+            });
+
+            // ボタンイベント
+            prevButton.addEventListener('click', onPrevPage);
+            nextButton.addEventListener('click', onNextPage);
+            zoomInButton.addEventListener('click', zoomIn);
+            zoomOutButton.addEventListener('click', zoomOut);
+            downloadBtn.addEventListener('click', downloadPDF);
+            printBtn.addEventListener('click', printPDF);
+            refreshBtn.addEventListener('click', refreshPage);
+
+            // リフレッシュボタンのデバッグ
+            console.log('リフレッシュボタン要素:', refreshBtn);
+            refreshBtn.addEventListener('click', function () {
+                console.log('リフレッシュボタンがクリックされました');
+            });
+
+            // ファイル一覧の初期化
+            function initFileList() {
+                // contents/フォルダ内のPDFファイル一覧
+                const pdfFiles = [
+                    { name: 'notion_vs_obsidian.pdf', size: '126KB', date: '2024-03-20', path: 'contents/notion_vs_obsidian.pdf' },
+                    { name: 'sample1.pdf', size: '992KB', date: '2024-01-15', path: 'contents/sample1.pdf' },
+                    { name: 'service_guide.pdf', size: '3.9MB', date: '2024-01-05', path: 'contents/service_guide.pdf' }
+                    { name: '7807_Emergent_Hierarchical_Rea.pdf', size: '3.4MB', date: '2025-12-18', path: 'contents/7807_Emergent_Hierarchical_Rea.pdf' }
+                ];
+
+                if (pdfFiles.length === 0) {
+                    filesContainer.innerHTML = '<div class="no-files"><p>contents/フォルダにPDFファイルがありません</p><p>PDFファイルをcontents/フォルダに追加してください</p></div>';
+                    return;
+                }
+
+                const filesGrid = document.createElement('div');
+                filesGrid.className = 'files-grid';
+
+                pdfFiles.forEach(file => {
+                    const fileCard = createFileCard(file);
+                    filesGrid.appendChild(fileCard);
+                });
+
+                filesContainer.innerHTML = '';
+                filesContainer.appendChild(filesGrid);
             }
-        }
 
-        function loadPDF(file) {
-            const fileReader = new FileReader();
+            // ファイルカードの作成
+            function createFileCard(file) {
+                const card = document.createElement('div');
+                card.className = 'file-card';
+                card.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${file.size}</div>
+                    <div class="file-date">${file.date}</div>
+                    <button class="load-button" onclick="loadFileFromList('${file.name}', '${file.path}')">読み込み</button>
+                `;
+                return card;
+            }
 
-            fileReader.onload = function () {
-                const typedarray = new Uint8Array(this.result);
-                renderPDF(typedarray);
-            };
+            // ファイル一覧からファイルを読み込み
+            function loadFileFromList(fileName, filePath) {
+                console.log(`Loading file: ${fileName} from ${filePath}`);
 
-            fileReader.readAsArrayBuffer(file);
-        }
+                loading.style.display = 'block';
+                error.style.display = 'none';
+                pdfContainer.style.display = 'none';
 
-        function renderPDF(data) {
-            loading.style.display = 'block';
-            error.style.display = 'none';
-            pdfContainer.style.display = 'none';
+                // PDF.jsでcontents/フォルダのPDFを読み込み
+                pdfjsLib.getDocument(filePath).promise.then(function (pdf) {
+                    pdfDoc = pdf;
+                    pageCountSpan.textContent = pdf.numPages;
 
-            pdfjsLib.getDocument({ data: data }).promise.then(function (pdf) {
-                pdfDoc = pdf;
-                pageCountSpan.textContent = pdf.numPages;
+                    // キャンバスの初期化
+                    canvas = document.getElementById('pdf-canvas');
+                    ctx = canvas.getContext('2d');
 
-                // キャンバスの初期化
-                canvas = document.getElementById('pdf-canvas');
-                ctx = canvas.getContext('2d');
+                    // 最初のページを表示
+                    pageNum = 1;
+                    scale = 1.0;
+                    zoomLevelSpan.textContent = '100%';
+                    renderPage(pageNum);
 
-                // 最初のページを表示
-                pageNum = 1;
-                scale = 1.0;
-                zoomLevelSpan.textContent = '100%';
-                renderPage(pageNum);
+                    loading.style.display = 'none';
+                    pdfContainer.style.display = 'block';
 
-                loading.style.display = 'none';
-                pdfContainer.style.display = 'block';
+                    // ボタンの有効化
+                    updateButtons();
 
-                // ボタンの有効化
-                updateButtons();
-            }).catch(function (error) {
-                console.error('PDF読み込みエラー:', error);
-                loading.style.display = 'none';
-                document.getElementById('error').style.display = 'block';
-            });
-        }
+                    // 現在のファイル情報を更新
+                    currentFile = { name: fileName, path: filePath };
+                }).catch(function (error) {
+                    console.error('PDF読み込みエラー:', error);
+                    loading.style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                });
+            }
 
-        function renderPage(num) {
-            pageRendering = true;
+            function handleFileSelect() {
+                const file = fileInput.files[0];
+                if (file && file.type === 'application/pdf') {
+                    currentFile = file;
+                    loadPDF(file);
+                }
+            }
 
-            pdfDoc.getPage(num).then(function (page) {
-                const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+            function loadPDF(file) {
+                const fileReader = new FileReader();
 
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
+                fileReader.onload = function () {
+                    const typedarray = new Uint8Array(this.result);
+                    renderPDF(typedarray);
                 };
 
-                const renderTask = page.render(renderContext);
-
-                renderTask.promise.then(function () {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-
-            pageNumSpan.textContent = num;
-            updateButtons();
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
+                fileReader.readAsArrayBuffer(file);
             }
-        }
 
-        function onPrevPage() {
-            if (pageNum <= 1) {
-                return;
-            }
-            pageNum--;
-            queueRenderPage(pageNum);
-        }
-
-        function onNextPage() {
-            if (pageNum >= pdfDoc.numPages) {
-                return;
-            }
-            pageNum++;
-            queueRenderPage(pageNum);
-        }
-
-        function zoomIn() {
-            scale *= 1.2;
-            zoomLevelSpan.textContent = Math.round(scale * 100) + '%';
-            queueRenderPage(pageNum);
-        }
-
-        function zoomOut() {
-            scale /= 1.2;
-            zoomLevelSpan.textContent = Math.round(scale * 100) + '%';
-            queueRenderPage(pageNum);
-        }
-
-        function updateButtons() {
-            if (pdfDoc) {
-                prevButton.disabled = pageNum <= 1;
-                nextButton.disabled = pageNum >= pdfDoc.numPages;
-            } else {
-                prevButton.disabled = true;
-                nextButton.disabled = true;
-            }
-        }
-
-        function downloadPDF() {
-            if (currentFile) {
-                if (currentFile.path) {
-                    // contents/フォルダのファイルの場合
-                    const a = document.createElement('a');
-                    a.href = currentFile.path;
-                    a.download = currentFile.name;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                } else {
-                    // アップロードされたファイルの場合
-                    const url = URL.createObjectURL(currentFile);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = currentFile.name;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }
-            }
-        }
-
-        function printPDF() {
-            if (currentFile) {
-                if (currentFile.path) {
-                    // contents/フォルダのファイルの場合
-                    const printWindow = window.open(currentFile.path);
-                    printWindow.onload = function () {
-                        printWindow.print();
-                    };
-                } else {
-                    // アップロードされたファイルの場合
-                    const url = URL.createObjectURL(currentFile);
-                    const printWindow = window.open(url);
-                    printWindow.onload = function () {
-                        printWindow.print();
-                    };
-                }
-            }
-        }
-
-        // リフレッシュ機能
-        function refreshPage() {
-            console.log('リフレッシュ開始');
-
-            // ボタンを無効化
-            refreshBtn.disabled = true;
-
-            try {
-                // 現在の状態をリセット
-                if (pdfDoc) {
-                    console.log('PDFドキュメントを破棄');
-                    pdfDoc.destroy();
-                    pdfDoc = null;
-                }
-
-                // 表示をリセット
-                pdfContainer.style.display = 'none';
-                loading.style.display = 'none';
+            function renderPDF(data) {
+                loading.style.display = 'block';
                 error.style.display = 'none';
+                pdfContainer.style.display = 'none';
 
-                // ファイル入力をリセット
-                fileInput.value = '';
-                currentFile = null;
+                pdfjsLib.getDocument({ data: data }).promise.then(function (pdf) {
+                    pdfDoc = pdf;
+                    pageCountSpan.textContent = pdf.numPages;
 
-                // ページ情報をリセット
-                pageNum = 1;
-                scale = 1.0;
-                pageNumSpan.textContent = '1';
-                pageCountSpan.textContent = '1';
-                zoomLevelSpan.textContent = '100%';
+                    // キャンバスの初期化
+                    canvas = document.getElementById('pdf-canvas');
+                    ctx = canvas.getContext('2d');
 
-                // キャンバスをクリア
-                if (canvas && ctx) {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
+                    // 最初のページを表示
+                    pageNum = 1;
+                    scale = 1.0;
+                    zoomLevelSpan.textContent = '100%';
+                    renderPage(pageNum);
 
-                // ボタンをリセット
-                updateButtons();
+                    loading.style.display = 'none';
+                    pdfContainer.style.display = 'block';
 
-                // ファイル一覧を再読み込み
-                initFileList();
-
-                console.log('リフレッシュ完了');
-
-            } catch (error) {
-                console.error('リフレッシュ中にエラーが発生:', error);
+                    // ボタンの有効化
+                    updateButtons();
+                }).catch(function (error) {
+                    console.error('PDF読み込みエラー:', error);
+                    loading.style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                });
             }
 
-            // 少し待ってからボタンを再有効化
-            setTimeout(() => {
-                refreshBtn.disabled = false;
-                console.log('リフレッシュボタン再有効化');
-            }, 1000);
-        }
-    </script>
-</body>
+            function renderPage(num) {
+                pageRendering = true;
 
+                pdfDoc.getPage(num).then(function (page) {
+                    const viewport = page.getViewport({ scale: scale });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    const renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+
+                    const renderTask = page.render(renderContext);
+
+                    renderTask.promise.then(function () {
+                        pageRendering = false;
+                        if (pageNumPending !== null) {
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                    });
+                });
+
+                pageNumSpan.textContent = num;
+                updateButtons();
+            }
+
+            function queueRenderPage(num) {
+                if (pageRendering) {
+                    pageNumPending = num;
+                } else {
+                    renderPage(num);
+                }
+            }
+
+            function onPrevPage() {
+                if (pageNum <= 1) {
+                    return;
+                }
+                pageNum--;
+                queueRenderPage(pageNum);
+            }
+
+            function onNextPage() {
+                if (pageNum >= pdfDoc.numPages) {
+                    return;
+                }
+                pageNum++;
+                queueRenderPage(pageNum);
+            }
+
+            function zoomIn() {
+                scale *= 1.2;
+                zoomLevelSpan.textContent = Math.round(scale * 100) + '%';
+                queueRenderPage(pageNum);
+            }
+
+            function zoomOut() {
+                scale /= 1.2;
+                zoomLevelSpan.textContent = Math.round(scale * 100) + '%';
+                queueRenderPage(pageNum);
+            }
+
+            function updateButtons() {
+                if (pdfDoc) {
+                    prevButton.disabled = pageNum <= 1;
+                    nextButton.disabled = pageNum >= pdfDoc.numPages;
+                } else {
+                    prevButton.disabled = true;
+                    nextButton.disabled = true;
+                }
+            }
+
+            function downloadPDF() {
+                if (currentFile) {
+                    if (currentFile.path) {
+                        // contents/フォルダのファイルの場合
+                        const a = document.createElement('a');
+                        a.href = currentFile.path;
+                        a.download = currentFile.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    } else {
+                        // アップロードされたファイルの場合
+                        const url = URL.createObjectURL(currentFile);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = currentFile.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }
+                }
+            }
+
+            function printPDF() {
+                if (currentFile) {
+                    if (currentFile.path) {
+                        // contents/フォルダのファイルの場合
+                        const printWindow = window.open(currentFile.path);
+                        printWindow.onload = function () {
+                            printWindow.print();
+                        };
+                    } else {
+                        // アップロードされたファイルの場合
+                        const url = URL.createObjectURL(currentFile);
+                        const printWindow = window.open(url);
+                        printWindow.onload = function () {
+                            printWindow.print();
+                        };
+                    }
+                }
+            }
+
+            // リフレッシュ機能
+            function refreshPage() {
+                console.log('リフレッシュ開始');
+
+                // ボタンを無効化
+                refreshBtn.disabled = true;
+
+                try {
+                    // 現在の状態をリセット
+                    if (pdfDoc) {
+                        console.log('PDFドキュメントを破棄');
+                        pdfDoc.destroy();
+                        pdfDoc = null;
+                    }
+
+                    // 表示をリセット
+                    pdfContainer.style.display = 'none';
+                    loading.style.display = 'none';
+                    error.style.display = 'none';
+
+                    // ファイル入力をリセット
+                    fileInput.value = '';
+                    currentFile = null;
+
+                    // ページ情報をリセット
+                    pageNum = 1;
+                    scale = 1.0;
+                    pageNumSpan.textContent = '1';
+                    pageCountSpan.textContent = '1';
+                    zoomLevelSpan.textContent = '100%';
+
+                    // キャンバスをクリア
+                    if (canvas && ctx) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
+
+                    // ボタンをリセット
+                    updateButtons();
+
+                    // ファイル一覧を再読み込み
+                    initFileList();
+
+                    console.log('リフレッシュ完了');
+
+                } catch (error) {
+                    console.error('リフレッシュ中にエラーが発生:', error);
+                }
+
+                // 少し待ってからボタンを再有効化
+                setTimeout(() => {
+                    refreshBtn.disabled = false;
+                    console.log('リフレッシュボタン再有効化');
+                }, 1000);
+            }
+        </script>
+    </body>
 </html>
