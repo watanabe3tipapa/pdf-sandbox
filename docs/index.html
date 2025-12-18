@@ -498,12 +498,6 @@
         printBtn.addEventListener('click', printPDF);
         refreshBtn.addEventListener('click', refreshPage);
 
-        // リフレッシュボタンのデバッグ
-        console.log('リフレッシュボタン要素:', refreshBtn);
-        refreshBtn.addEventListener('click', function () {
-            console.log('リフレッシュボタンがクリックされました');
-        });
-
         // ファイル一覧の初期化
         function initFileList() {
             // contents/フォルダ内のPDFファイル一覧
@@ -752,15 +746,12 @@
 
         // リフレッシュ機能
         function refreshPage() {
-            console.log('リフレッシュ開始');
-
             // ボタンを無効化
             refreshBtn.disabled = true;
 
             try {
                 // 現在の状態をリセット
                 if (pdfDoc) {
-                    console.log('PDFドキュメントを破棄');
                     pdfDoc.destroy();
                     pdfDoc = null;
                 }
@@ -792,8 +783,6 @@
                 // ファイル一覧を再読み込み
                 initFileList();
 
-                console.log('リフレッシュ完了');
-
             } catch (error) {
                 console.error('リフレッシュ中にエラーが発生:', error);
             }
@@ -801,7 +790,6 @@
             // 少し待ってからボタンを再有効化
             setTimeout(() => {
                 refreshBtn.disabled = false;
-                console.log('リフレッシュボタン再有効化');
             }, 1000);
         }
     </script>
